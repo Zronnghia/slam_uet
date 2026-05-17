@@ -13,13 +13,12 @@
 #include "tf2/utils.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
-// --- CẤU HÌNH CĂN CHỈNH ---
 const int MAP_SIZE = 1000;
 const double MAP_RES = 0.025;
 const double LOG_OCC = 4.75;         
 const double LOG_FREE = -0.1;       
 const double MAX_SAFE_RANGE = 6.0;  
-const double OCC_STRICT_LOCK = 2.0; // <--- BIẾN "CỨU TINH" CỦA BẠN ĐÂY
+const double OCC_STRICT_LOCK = 2.0; 
 
 class AslamNode : public rclcpp::Node {
 public:
@@ -77,7 +76,6 @@ private:
             bool is_hit = (r < msg->range_max - 0.2) && (r < MAX_SAFE_RANGE);
             double angle = msg->angle_min + i * msg->angle_increment + syaw;
             
-            // RAYCASTING (Xóa vùng trắng)
             double free_limit = is_hit ? (r - MAP_RES * 4.0) : std::min(r, MAX_SAFE_RANGE);
             for (double d = 0.0; d < free_limit; d += MAP_RES * 0.8) {
                 double wx = sx + d * std::cos(angle);
@@ -88,8 +86,6 @@ private:
 
                 if (mx >= 0 && mx < MAP_SIZE && my >= 0 && my < MAP_SIZE) {
                     int idx = my * MAP_SIZE + mx;
-                    
-                    // --- DÙNG BIẾN OCC_STRICT_LOCK Ở ĐÂY ---
                     if (prob_map_[idx] > OCC_STRICT_LOCK) break; 
                     
                     prob_map_[idx] += LOG_FREE;
@@ -97,7 +93,6 @@ private:
                 }
             }
 
-            // VẼ VẬT CẢN (Hit)
             if (is_hit) {
                 double wx = sx + r * std::cos(angle);
                 double wy = sy + r * std::sin(angle);

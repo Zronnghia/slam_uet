@@ -13,7 +13,6 @@ def generate_launch_description():
     return LaunchDescription([
         DeclareLaunchArgument('use_sim_time', default_value='true', description='Use simulation time'),
 
-        # Node SLAM chính ngốn 2 luồng Lidar
         Node(
             package='cartographer_ros',
             executable='cartographer_node',
@@ -30,7 +29,6 @@ def generate_launch_description():
             ]
         ),
 
-        # Node chuyển đổi ra Map cho RViz
         Node(
             package='cartographer_ros',
             executable='cartographer_occupancy_grid_node',

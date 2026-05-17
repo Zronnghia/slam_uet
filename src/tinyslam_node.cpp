@@ -12,13 +12,12 @@
 #include "tf2/utils.h"
 #include "tf2_geometry_msgs/tf2_geometry_msgs.hpp"
 
-// --- THAM SỐ VÀNG CỦA TRÚC + BỘ LỌC BIÊN ---
 const int MAP_SIZE = 1000;
 const double MAP_RES = 0.025;
 const double LOG_OCC = 4.75;         
-const double LOG_FREE = -0.15;      // Tăng nhẹ lực xóa để dọn map nhanh hơn
-const double MAX_HIT_RANGE = 3.0;   // CHỈ VẼ vật cản trong 5.5m (Tránh nhiễu xa)
-const double MAX_FREE_RANGE = 3.5;  // Cho phép XÓA vùng trắng lên tới 6.5m
+const double LOG_FREE = -0.15;      
+const double MAX_HIT_RANGE = 3.0;   
+const double MAX_FREE_RANGE = 3.5;  
 const double OCC_STRICT_LOCK = 2.0; 
 
 class TinySlamFortress : public rclcpp::Node {
@@ -72,15 +71,10 @@ private:
             // Xử lý lỗi INF/NAN
             if (std::isnan(r) || std::isinf(r)) r = MAX_FREE_RANGE;
 
-            // --- CHIẾN THUẬT DIỆT BIÊN ĐEN ---
-            // Một tia chỉ được coi là vật cản thực sự nếu:
-            // 1. Cách range_max của cảm biến ít nhất 0.3m (loại bỏ nhiễu biên Gazebo)
-            // 2. Nằm trong bán kính tin cậy MAX_HIT_RANGE
             bool is_hit = (r < msg->range_max - 0.3) && (r < MAX_HIT_RANGE);
             
             double angle = msg->angle_min + i * msg->angle_increment + syaw;
             
-            // 1. RAYCASTING (Xóa vùng trắng)
             double free_limit = is_hit ? (r - MAP_RES * 4.0) : std::min(r, MAX_FREE_RANGE);
             for (double d = 0.0; d < free_limit; d += MAP_RES * 0.7) {
                 double wx = sx + d * std::cos(angle);
@@ -91,7 +85,6 @@ private:
 
                 if (mx >= 0 && mx < MAP_SIZE && my >= 0 && my < MAP_SIZE) {
                     int idx = my * MAP_SIZE + mx;
-                    // Chặn tia laser: Thấy vật cản đã khóa là dừng (Bảo vệ sofa)
                     if (prob_map_[idx] > OCC_STRICT_LOCK) break; 
                     
                     prob_map_[idx] += LOG_FREE;
@@ -99,7 +92,6 @@ private:
                 }
             }
 
-            // 2. VẼ VẬT CẢN (Chỉ khi is_hit thực sự an toàn)
             if (is_hit) {
                 update_cell_hit(sx + r * std::cos(angle), sy + r * std::sin(angle));
             }

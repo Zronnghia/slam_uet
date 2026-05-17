@@ -4,7 +4,6 @@ from launch import LaunchDescription
 from launch_ros.actions import Node
 
 def generate_launch_description():
-    # Chỉ định rõ ràng lấy cấu hình từ não bộ 'slam_uet'
     pkg_share = get_package_share_directory('slam_uet')   
     
     lua_config_path = os.path.join(pkg_share, 'config')
@@ -22,10 +21,8 @@ def generate_launch_description():
                 '-configuration_basename', lua_config_file
             ],
             remappings=[
-                # Đã XÓA remapping của points2_1 và points2_2. 
-                # Cartographer sẽ tự động đọc thẳng topic /points2 do URDF phát ra.
                 ('imu', '/imu'),
-                ('odom', '/odom'), # Giữ lại để đảm bảo kết nối chắc chắn với diff_drive
+                ('odom', '/odom'), 
             ]
         ),
 

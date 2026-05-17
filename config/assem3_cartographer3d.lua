@@ -29,19 +29,13 @@ options = {
   landmarks_sampling_ratio = 1.,
 }
 
--- 1. Ép Cartographer xử lý ngay lập tức
 TRAJECTORY_BUILDER_3D.num_accumulated_range_data = 1 
 
--- 2. Giới hạn tầm nhìn (Lọc rác bản thân và hư không)
 TRAJECTORY_BUILDER_3D.min_range = 0.3
 TRAJECTORY_BUILDER_3D.max_range = 10.0
-
--- 3. Bộ lọc "Lười biếng" (Xe đứng im thì không tính toán -> Mát máy)
 TRAJECTORY_BUILDER_3D.motion_filter.max_time_seconds = 0.5
 TRAJECTORY_BUILDER_3D.motion_filter.max_distance_meters = 0.1
 TRAJECTORY_BUILDER_3D.motion_filter.max_angle_radians = 0.02
-
--- 4. Gọt bớt dữ liệu Lidar 3D để CPU thở
 TRAJECTORY_BUILDER_3D.voxel_filter_size = 0.05
 TRAJECTORY_BUILDER_3D.submaps.high_resolution = 0.05
 TRAJECTORY_BUILDER_3D.submaps.low_resolution = 0.2

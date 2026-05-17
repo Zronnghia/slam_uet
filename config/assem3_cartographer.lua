@@ -35,9 +35,6 @@ options = {
 -- Kích hoạt chế độ 2D
 MAP_BUILDER.use_trajectory_builder_2d = true
 
--- ==========================================
--- CẤU HÌNH CƠ BẢN (CHỐNG LỖI VÀ CHỐNG NHÒE)
--- ==========================================
 options.trajectory_builder.trajectory_builder_2d.min_range = 0.1
 options.trajectory_builder.trajectory_builder_2d.max_range = 5.0
 options.trajectory_builder.trajectory_builder_2d.use_imu_data = false
@@ -45,13 +42,8 @@ options.trajectory_builder.trajectory_builder_2d.use_online_correlative_scan_mat
 options.trajectory_builder.trajectory_builder_2d.min_z = 0.05
 options.trajectory_builder.trajectory_builder_2d.max_z = 1.5
 options.trajectory_builder.trajectory_builder_2d.missing_data_ray_length = 0.0
-
--- Sửa lỗi nhòe: Gộp đủ 2 tia Lidar rồi mới tính toán
 options.trajectory_builder.trajectory_builder_2d.num_accumulated_range_data = 2
 
--- ==========================================
--- [NÂNG CẤP 1] TỐI ƯU HÓA ĐIỂM ẢNH (VOXEL FILTER)
--- ==========================================
 options.trajectory_builder.trajectory_builder_2d.voxel_filter_size = 0.025
 options.trajectory_builder.trajectory_builder_2d.adaptive_voxel_filter.max_length = 0.025
 options.trajectory_builder.trajectory_builder_2d.adaptive_voxel_filter.min_num_points = 400
@@ -60,16 +52,12 @@ options.trajectory_builder.trajectory_builder_2d.submaps.grid_options_2d.resolut
 options.trajectory_builder.trajectory_builder_2d.submaps.range_data_inserter.probability_grid_range_data_inserter.hit_probability = 0.89
 options.trajectory_builder.trajectory_builder_2d.submaps.range_data_inserter.probability_grid_range_data_inserter.miss_probability = 0.498
 options.trajectory_builder.trajectory_builder_2d.max_range = 6.0
--- ==========================================
--- [NÂNG CẤP 2] TĂNG ĐỘ CHÍNH XÁC GÓC TƯỜNG (CERES SOLVER)
--- ==========================================
+
 options.trajectory_builder.trajectory_builder_2d.ceres_scan_matcher.occupied_space_weight = 25.0
 options.trajectory_builder.trajectory_builder_2d.ceres_scan_matcher.translation_weight = 20.0
 options.trajectory_builder.trajectory_builder_2d.ceres_scan_matcher.rotation_weight = 50.0
 options.trajectory_builder.trajectory_builder_2d.submaps.range_data_inserter.probability_grid_range_data_inserter.insert_free_space = true
--- ==========================================
--- [NÂNG CẤP 3] ĐÓNG VÒNG CHỐNG TRÔI (LOOP CLOSURE)
--- ==========================================
+
 POSE_GRAPH.optimize_every_n_nodes = 90
 POSE_GRAPH.constraint_builder.min_score = 0.65
 POSE_GRAPH.constraint_builder.global_localization_min_score = 0.70
